@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -288,6 +288,7 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+        self.cornersList = (self.c0, self.c1, self.c2, self.c3) = (False, False, False, False)
 
     def getStartState(self):
         """
@@ -295,14 +296,21 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # state = (coordinates, (corners list))
+        return (self.startingPosition, self.cornersList)
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        # state = (coordinates, (corners list))
+
+        isGoal = False
+        if state[1] == (True, True, True, True):
+            isGoal = True
+        return isGoal
 
     def getSuccessors(self, state):
         """
@@ -325,6 +333,28 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+
+            currentPosition = state[0]
+            self.c0 = state[1][0]
+            self.c1 = state[1][1]
+            self.c2 = state[1][2]
+            self.c3 = state[1][3]
+
+            x,y = currentPosition
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            if not hitsWall:
+                if ((nextx, nexty) == self.corners[0]):
+                    self.c0 = True
+                if ((nextx, nexty) == self.corners[1]):
+                    self.c1 = True
+                if ((nextx, nexty) == self.corners[2]):
+                    self.c2 = True
+                if ((nextx, nexty) == self.corners[3]):
+                    self.c3 = True
+                successor = ((nextx, nexty), (self.c0, self.c1, self.c2, self.c3))
+                successors.append((successor, action, 1))
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
