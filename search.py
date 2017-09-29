@@ -197,46 +197,6 @@ def uniformCostSearch(problem):
 
     return actions
 
-    """start = problem.getStartState()
-
-    #print "Start: ", start
-    #print "Is the start a goal?", problem.isGoalState(start)
-    #print "Start's successors: ", problem.getSuccessors(start)
-
-    # create fringe queue and visited list
-    fringe = util.PriorityQueue()
-    visited = []
-    actions = []
-
-    # if current state is goal state then return no actions
-    if problem.isGoalState(start):
-        return actions
-
-    # push the start node on the fringe queue
-    fringe.push((start, [], 1), 1)
-
-    while not fringe.isEmpty():
-        n = fringe.pop()
-        actions = n[1]
-        #print "actions 1: ", actions
-
-        # check if goal path found
-        if problem.isGoalState(n[0]):
-            #print "actions: ", actions
-            return actions
-
-        for successor in problem.getSuccessors(n[0]):
-            actions = list(n[1])
-            if not (successor[0] in visited):
-                visited.append(successor[0])
-                #print "successor: ", successor
-                actions.append(successor[1])
-                fringe.push((successor[0], actions, successor[2]), successor[2])
-
-    print "actions: ", actions
-    return actions
-    #util.raiseNotDefined()"""
-
 def nullHeuristic(state, problem=None):
     """
     A heuristic function estimates the cost from the current state to the nearest
@@ -247,7 +207,57 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    start = problem.getStartState()
+
+    # create fringe queue and visited list
+    fringe = util.PriorityQueue()
+    visited = []
+    succeeded = []
+
+    # push the start node on the fringe queue
+    h = heuristic(start, problem)
+    ch = 0 + h
+    # node(coordinates, actions, cost, heuristic)
+    fringe.push((start, [], 0), ch)
+
+    while not fringe.isEmpty():
+        n = fringe.pop()
+        #print "node: ", n
+        actions = n[1]
+        #h = heuristic(n[0], problem)
+
+        visited.append(n[0])
+
+        # check if goal state found
+        if problem.isGoalState(n[0]):
+            return actions
+
+        #print "successors: ", problem.getSuccessors(n[0])
+        #print "current action on node: ", n[1]
+
+        # node(coordinates, actions, cost, heuristic)
+
+        for successor in problem.getSuccessors(n[0]):
+            #print "successors on %s : %s" % (str(n[0]), problem.getSuccessors(n[0]))
+            if not successor[0] in visited:
+                if (not successor[0] in succeeded) or (problem.isGoalState(successor[0])):
+                    succeeded.append(successor[0])
+                    successorActions = list(n[1])
+                    successorActions.append(successor[1])
+                    successorCost = n[2] + successor[2]
+                    #successorHeuristic = h + heuristic(successor[0], problem)
+                    successorHeuristic = heuristic(successor[0], problem)
+                    scsh = successorCost + successorHeuristic
+                    #print "pushing: ", (successor[0], successorCost)
+                    fringe.push((successor[0], successorActions, successorCost), scsh)
+        #print "went through successors"
+
+        # check if goal state found
+        if problem.isGoalState(n[0]):
+            return actions
+
+    return actions
 
 
 # Abbreviations
