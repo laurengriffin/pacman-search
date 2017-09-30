@@ -569,7 +569,11 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        import search
+        #from search import SearchProblem
+        actions = search.aStarSearch(problem)
+        return actions
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -605,7 +609,8 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        return ((self.food.count() == 0) or (self.food[x][y] == 1))
 
 def mazeDistance(point1, point2, gameState):
     """
