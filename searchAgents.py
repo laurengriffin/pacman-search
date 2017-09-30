@@ -390,7 +390,29 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+
+    # crate list of the corners that have not been visited
+    unvisited = []
+    for i, crnr in enumerate(corners):
+        if state[1][i] == False:
+            unvisited.append(crnr)
+
+    # location at start of problem
+    location = state[0]
+    heur = 0
+
+    while len(unvisited) != 0:
+        index = mdist = -1
+        for i in range(len(unvisited)):
+            dist = abs(location[0] - unvisited[i][0]) + abs(location[1] - unvisited[i][1])
+            if mdist == -1 or dist < mdist:
+                mdist = dist
+                index = i
+        heur += mdist
+        location = unvisited[index]
+        unvisited.remove(location)
+
+    return heur
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
