@@ -391,7 +391,7 @@ def cornersHeuristic(state, problem):
 
     "*** YOUR CODE HERE ***"
 
-    # crate list of the corners that have not been visited
+    # create list of the corners that have not been visited
     unvisited = []
     for i, crnr in enumerate(corners):
         if state[1][i] == False:
@@ -506,7 +506,39 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+
+    uneaten = foodGrid.asList()
+    mdist = ((0,0),(0,0),0)
+    heur = n1 = n2 = 0
+
+    # check to see if there are some food pieces on board
+    if (len(uneaten) == 0):
+            return heur
+
+    # find maximum distance between two food pieces
+    for i in uneaten:
+        for j in uneaten:
+            if not (i == j):
+                dist = abs(i[0] - j[0]) + abs(i[1] - j[1])
+                if(mdist[2] < dist):
+                    mdist = (i,j,dist)
+                    n1 = abs(i[0] - position[0]) + abs(i[1] - position[1])
+                    n2 = abs(j[0] - position[0]) + abs(j[1] - position[1])
+
+    if n1 > n2:
+        start = n2
+    else:
+        start = n1
+
+    # only one food item in the uneaten list
+    if( (mdist[0], mdist[1]) == ((0,0), (0,0)) ):
+        heur = abs(position[0] - uneaten[0][0]) + abs(position[1] - uneaten[0][1])
+    # heuristic value is the distance from the start to closest node
+    # + the maximum distance between nodes
+    else:
+        heur = mdist[2] + start
+
+    return heur
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
